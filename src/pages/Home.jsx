@@ -33,12 +33,15 @@ const Home = () => {
   return (
     <div className='home'>
         <form className='search-form' onSubmit={handleSubmission}>
-            <input type="text" placeholder='Search for movies....' className='search-input' value={searchTerm} />
+            <input type="text" placeholder='Search for movies....' className='search-input' value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}}/>
             <button type="submit" className='search-button'>Search</button>
         </form>
         <div className='movie-grid'>
             {movies.map((movie) => (
-                <MovieCard movie={movie} key={movie.id}/>
+                // Filter movies based on the search term i.e. conditionally render the MovieCard component
+                //searchterm is a state variable whenever it changes the home component re-renders
+                movie.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
+                (<MovieCard movie={movie} key={movie.id}/>)
             ))}
         </div>
     </div>
