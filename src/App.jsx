@@ -1,9 +1,10 @@
 import React from "react";
+import Home from "./pages/Home";
 import MovieCard from "./Components/MovieCard";
 const App = () => {
   return <>
-  <MovieCard movie={{title: "Inception", release_date: "2010", url: "https://example.com/inception.jpg"}} />
-  </>;
+  <Home/>
+  </>
 };
 
 export default App;
