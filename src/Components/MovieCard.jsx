@@ -1,4 +1,5 @@
 import React from "react";
+import "../css/MovieCard.css";
 function onFavoriteClick() {
   console.log("Movie added to favorites!");
 }

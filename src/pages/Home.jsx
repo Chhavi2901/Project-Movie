@@ -1,6 +1,7 @@
 import React from 'react'
 import MovieCard from '../Components/MovieCard';
 import { useState } from 'react';
+import "../css/Home.css"; 
 
 const Home = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -36,7 +37,7 @@ const Home = () => {
             <input type="text" placeholder='Search for movies....' className='search-input' value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}}/>
             <button type="submit" className='search-button'>Search</button>
         </form>
-        <div className='movie-grid'>
+        <div className='movies-grid'>
             {movies.map((movie) => (
                 // Filter movies based on the search term i.e. conditionally render the MovieCard component
                 //searchterm is a state variable whenever it changes the home component re-renders
