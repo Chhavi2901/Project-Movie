@@ -1,17 +1,28 @@
 import React from "react";
 import "../css/MovieCard.css";
-function onFavoriteClick() {
-  console.log("Movie added to favorites!");
-}
+import { useMovieContext } from "../contexts/MovieContext";
 
 const MovieCard = ({ movie }) => {
+  const { isFav, addToFav, removeFromFav } = useMovieContext();
+  const favorite = isFav(movie.id);
+  function onFavoriteClick() {
+    if (favorite) {
+      removeFromFav(movie.id); // Remove from favorites if already present
+    } else {
+      addToFav(movie); // Add to favorites if not present
+    }
+  }
+
   return (
     <div className="movie-card">
       <div className="movie-poster">
-        <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+        />
         <div className="movie-overlay">
           <button className="favorite-btn" onClick={onFavoriteClick}>
-            🤍
+          {favorite ? '❤️' : '🤍'}
           </button>
         </div>
       </div>

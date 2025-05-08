@@ -13,6 +13,7 @@ const Home = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
+        setError(null); // Reset error state before fetching
         const data = await getPolpularMovies(); 
         setMovies(data); 
       } catch (err) {
@@ -65,7 +66,7 @@ const Home = () => {
           Search
         </button>
       </form>
-      {error && <h1>Error: {error.message}</h1>}{" "}
+      {error && <h1>Error hai: {error.message}</h1>}{" "}
       {/* Show error message if any */}
       {loading ? (
         <h1>Loading...</h1>
