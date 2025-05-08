@@ -11,8 +11,7 @@ const App = () => {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/favorites" element={<Favorites />} /> // maps the path
-          /favorites to the Favorites component
+          <Route path="/favorites" element={<Favorites />} /> 
           <Route path="*" element={<h1>404 Not Found</h1>} />
         </Routes>
       </main>

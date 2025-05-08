@@ -1,52 +1,87 @@
-import React from 'react'
-import MovieCard from '../Components/MovieCard';
-import { useState } from 'react';
-import "../css/Home.css"; 
+import React, { use } from "react";
+import MovieCard from "../Components/MovieCard";
+import { useState, useEffect } from "react";
+import { getPolpularMovies, searchMovies } from "../services/api";
+import "../css/Home.css";
 
 const Home = () => {
-    const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); 
 
-    const movies = [
-        {   id:1,
-            title: "Inception",
-            release_date: "2010",
-            url: "https://example.com/inception.jpg"
-        },
-        {  id:2,
-            title: "The Dark Knight",
-            release_date: "2008",
-            url: "https://example.com/dark-knight.jpg"
-        },
-        {   id:3,
-            title: "Interstellar",
-            release_date: "2014",
-            url: "https://example.com/interstellar.jpg"
-        }
-    ];
-  const handleSubmission = (e) => {
-    e.preventDefault();  // Prevent the default form submission behavior and page reload
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const data = await getPolpularMovies(); 
+        setMovies(data); 
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false); 
+      }
+    };
+    fetchMovies(); // Call the fetchMovies function to initiate fetching
+  }, []); // Empty dependency array means this effect runs once on component mount
+
+
+
+
+  
+  const handleSubmission = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior and page reload
+
     console.log(searchTerm);
-    setSearchTerm(""); // Clear the input field after submission
-  }
+    if (searchTerm.trim() === "") return; // If the search term is empty, do nothing
+    if (loading) return; // If loading, do nothing
+    setLoading(true); // Set loading to true while fetching search results
 
+    try {
+      const fetchSearchResults = await searchMovies(searchTerm);
+      setMovies(fetchSearchResults);
+      setError(null);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
 
+    setSearchTerm("");
+  };
 
   return (
-    <div className='home'>
-        <form className='search-form' onSubmit={handleSubmission}>
-            <input type="text" placeholder='Search for movies....' className='search-input' value={searchTerm} onChange={(e)=>{setSearchTerm(e.target.value)}}/>
-            <button type="submit" className='search-button'>Search</button>
-        </form>
-        <div className='movies-grid'>
-            {movies.map((movie) => (
-                // Filter movies based on the search term i.e. conditionally render the MovieCard component
-                //searchterm is a state variable whenever it changes the home component re-renders
-                movie.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
-                (<MovieCard movie={movie} key={movie.id}/>)
-            ))}
+    <div className="home">
+      <form className="search-form" onSubmit={handleSubmission}>
+        <input
+          type="text"
+          placeholder="Search for movies...."
+          className="search-input"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+          }}
+        />
+        <button type="submit" className="search-button">
+          Search
+        </button>
+      </form>
+      {error && <h1>Error: {error.message}</h1>}{" "}
+      {/* Show error message if any */}
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div className="movies-grid">
+          {movies.map((movie) => (
+            // Filter movies based on the search term i.e. conditionally render the MovieCard component
+            //searchterm is a state variable whenever it changes the home component re-renders
+            //   movie.title.toLowerCase().startswith(searchTerm.toLowerCase()) &&
+            <MovieCard movie={movie} key={movie.id} />
+          ))}
         </div>
+      )}
+      {/* Show loading message while fetching movies */}
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
