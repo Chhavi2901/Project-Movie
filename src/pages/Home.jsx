@@ -8,37 +8,40 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setError(null); // Reset error state before fetching
-        const data = await getPolpularMovies(); 
-        setMovies(data); 
+        const data = await getPolpularMovies();
+        setMovies(data);
       } catch (err) {
         setError(err);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
     fetchMovies(); // Call the fetchMovies function to initiate fetching
   }, []); // Empty dependency array means this effect runs once on component mount
 
-
-
-
-  
   const handleSubmission = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior and page reload
 
-    console.log(searchTerm);
+    // console.log(searchTerm);
     if (searchTerm.trim() === "") return; // If the search term is empty, do nothing
     if (loading) return; // If loading, do nothing
     setLoading(true); // Set loading to true while fetching search results
 
     try {
       const fetchSearchResults = await searchMovies(searchTerm);
+      console.log(fetchSearchResults);
+      if (!fetchSearchResults || fetchSearchResults.length === 0) {
+        setMovies([]);
+        setError(new Error("No movies found")); // Custom message
+        return;
+      }
+
       setMovies(fetchSearchResults);
       setError(null);
     } catch (err) {
@@ -66,7 +69,7 @@ const Home = () => {
           Search
         </button>
       </form>
-      {error && <h1>Error hai: {error.message}</h1>}{" "}
+      {error && <h1>{error.message}</h1>}
       {/* Show error message if any */}
       {loading ? (
         <h1>Loading...</h1>
